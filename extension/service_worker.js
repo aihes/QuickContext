@@ -1,3 +1,13 @@
+// 测试Manifest V3的功能，当前没有用到
+// service_worker.js
+importScripts('jquery-ui-1.13.2.custom/external/jquery/jquery.js');
+importScripts('jquery-ui-1.13.2.custom/jquery-ui.min.js');
+// importScripts('background.js');
+importScripts('utility.js');
+importScripts('api.js');
+importScripts('floatingDiv.js');
+
+// 这里放置你的初始化代码
 // 右键菜单点击事件处理
 chrome.contextMenus.onClicked.addListener(function (info, tab) {
     const selectedText = info.selectionText;
@@ -37,3 +47,4 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
         });
     }
 });
+

@@ -47,14 +47,14 @@ function renderApiConfigs(apiConfigs) {
     $apiList.empty();
 
     let $table = $("<table>").addClass("table table-striped"); // Bootstrap table
-    $table.append(`<thead><tr><th>API 类型</th><th>API 名称</th><th>API 提示</th><th>操作</th></tr></thead>`); // Table header
+    $table.append(`<thead><tr><th>API Type</th><th>API Name</th><th>API Prompt</th><th>Actions</th></tr></thead>`); // Table header
     let $tbody = $("<tbody>");
 
     apiConfigs.forEach((config, index) => {
         let $row = $("<tr>");
-        $row.append(`<td><input class="apiType form-control" placeholder="API 类型" value="${config.apiType}"></td>`);
-        $row.append(`<td><input class="apiName form-control" placeholder="API 名称" value="${config.apiName}"></td>`);
-        $row.append(`<td><textarea class="apiPrompt form-control" rows="3" placeholder="API 提示">${config.apiPrompt}</textarea></td>`); // Textarea for multi-line
+        $row.append(`<td><input class="apiType form-control" placeholder="Just a label, won't appear in the request" value="${config.apiType}"></td>`);
+        $row.append(`<td><input class="apiName form-control" placeholder="Menu that pops up when you right-click" value="${config.apiName}"></td>`);
+        $row.append(`<td><textarea class="apiPrompt form-control" rows="3" placeholder="Prompt for requesting LLM, {text} is the text you've selected, remember to include it.">${config.apiPrompt}</textarea></td>`); // Textarea for multi-line
 
         let $actionCol = $("<td>");
         $actionCol.append('<button class="btn btn-primary update-api-button">更新</button> ');

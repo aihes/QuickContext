@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
-  "name": "QuickContext — Your Intelligent Right-Click Assistant",
-  "description": "Enhance your web browsing experience with QuickContext. Instantly translate words, get contextual explanations, and perform custom actions—all directly from your right-click menu.",
+  "name": "QuickContext — Right-Click Assistant",
+  "description": "Boost browsing with QuickContext. Translate words, get explanations, and do custom actions from your right-click menu.",
   "version": "1.0",
   "permissions": [
     "contextMenus",

@@ -49,20 +49,12 @@ async function fetchOpenAI(apiName, apiKey, openaiModel, prompt_text, tab) {
 
         async function fetchStream() {
             const response = await fetch("https://api.openai.com/v1/chat/completions", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${apiKey}`
-                },
-                body: JSON.stringify({
-                    "model": openaiModel ? openaiModel : "gpt-3.5-turbo",
-                    "stream": true,
-                    "messages": [
-                        {
-                            "role": "system",
-                            "content": `${prompt_text}`
-                        }
-                    ]
+                method: "POST", headers: {
+                    "Content-Type": "application/json", "Authorization": `Bearer ${apiKey}`
+                }, body: JSON.stringify({
+                    "model": openaiModel ? openaiModel : "gpt-3.5-turbo", "stream": true, "messages": [{
+                        "role": "system", "content": `${prompt_text}`
+                    }]
                 })
             });
 
@@ -119,10 +111,8 @@ function fetchData(apiType, selectedText, serverUrl, tab) {
     // 从 localStorage 获取配置
     let apiConfigs = JSON.parse(localStorage.getItem('apiConfigs') || '[]');
     let defaultApiConfigs = [{
-        apiType: 'translate',
-        apiName: '翻译',
-        apiPrompt: '将如下的内容{text}翻译为中文'
-    }, {apiType: 'explain', apiName: '解释', apiPrompt: '帮我详细解释如下{text} 含义'}];
+        apiType: 'translate_built_in', apiName: '翻译', apiPrompt: '将如下的内容{text}翻译为中文'
+    }, {apiType: 'explain_built_in', apiName: '解释', apiPrompt: '帮我详细解释如下{text} 含义'}];
 
     let mergedConfigs = defaultApiConfigs.concat(apiConfigs);
 
