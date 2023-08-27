@@ -1,11 +1,14 @@
 {
-  "manifest_version": 2,
+  "manifest_version": 3,
   "name": "QuickContext — Right-Click Assistant",
   "description": "Boost browsing with QuickContext. Translate words, get explanations, and do custom actions from your right-click menu.",
   "version": "1.0",
   "permissions": [
     "contextMenus",
-    "<all_urls>"
+    "storage",
+    "activeTab",
+    "tabs",
+    "scripting"
   ],
   "host_permissions": [
     "<all_urls>"
@@ -15,15 +18,7 @@
     "128": "icons/QuickContext_logo_128x128.png"
   },
   "background": {
-    "scripts": [
-      "jquery-ui-1.13.2.custom/external/jquery/jquery.js",
-      "jquery-ui-1.13.2.custom/jquery-ui.min.js",
-      "background.js",
-      "utility.js",
-      "api.js",
-      "floatingDiv.js"
-    ],
-    "persistent": false
+    "service_worker": "service_worker.js"
   },
   "content_scripts": [
     {
@@ -42,12 +37,19 @@
     }
   ],
   "web_accessible_resources": [
-    "jquery-ui-1.13.2.custom/jquery-ui.min.css",
-    "jquery-ui-1.13.2.custom/jquery-ui.structure.min.css",
-    "jquery-ui-1.13.2.custom/jquery-ui.theme.min.css",
-    "bootstrap-3.4.1-dist/css/bootstrap.css",
-    "bootstrap-3.4.1-dist/css/bootstrap-theme.css",
-    "bootstrap-3.4.1-dist/js/bootstrap.js"
+    {
+      "resources": [
+        "jquery-ui-1.13.2.custom/jquery-ui.min.css",
+        "jquery-ui-1.13.2.custom/jquery-ui.structure.min.css",
+        "jquery-ui-1.13.2.custom/jquery-ui.theme.min.css",
+        "bootstrap-3.4.1-dist/css/bootstrap.css",
+        "bootstrap-3.4.1-dist/css/bootstrap-theme.css",
+        "bootstrap-3.4.1-dist/js/bootstrap.js"
+      ],
+      "matches": [
+        "*://*/*"
+      ]
+    }
   ],
   "options_page": "options.html"
 }

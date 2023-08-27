@@ -107,9 +107,15 @@ async function fetchOpenAI(apiName, apiKey, openaiModel, prompt_text, tab) {
 }
 
 // API 请求和处理
-function fetchData(apiType, selectedText, serverUrl, tab) {
+async function fetchData(apiType, selectedText, serverUrl, tab) {
     // 从 localStorage 获取配置
-    let apiConfigs = JSON.parse(localStorage.getItem('apiConfigs') || '[]');
+
+    let apiConfigs = await new Promise(resolve => chrome.storage.local.get(['apiConfigs'], result => resolve(result.apiConfigs || [])));
+    let apiKey = await new Promise(resolve => chrome.storage.local.get(['api_key'], result => resolve(result.api_key || '')));
+    let model_type = await new Promise(resolve => chrome.storage.local.get(['model_type'], result => resolve(result.model_type || 'generic')));
+    let openai_model = await new Promise(resolve => chrome.storage.local.get(['openai_model'], result => resolve(result.openai_model || 'gpt-3.5-turbo')));
+
+
     let defaultApiConfigs = [{
         apiType: 'translate_built_in', apiName: '翻译', apiPrompt: '将如下的内容{text}翻译为中文'
     }, {apiType: 'explain_built_in', apiName: '解释', apiPrompt: '帮我详细解释如下{text} 含义'}];
@@ -121,9 +127,7 @@ function fetchData(apiType, selectedText, serverUrl, tab) {
     const apiName = config ? config.apiName : '';
     const apiPrompt = config ? config.apiPrompt : '';
 
-    // 获取 api_key
-    const apiKey = localStorage.getItem('api_key') || '';
-    const model_type = localStorage.getItem('model_type') || 'generic'
+
 
     if (!apiKey || !model_type) {
         // 构建 payload
@@ -152,7 +156,7 @@ function fetchData(apiType, selectedText, serverUrl, tab) {
     if (model_type === "generic") {
         fetchGeneric(apiName, apiKey, prompt_text, tab);
     } else if (model_type === "openai") {
-        const openai_model = localStorage.getItem('openai_model') || 'gpt-3.5-turbo'
+
         fetchOpenAI(apiName, apiKey, openai_model, prompt_text, tab);
     }
 

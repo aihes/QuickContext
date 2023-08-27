@@ -1,38 +1,43 @@
 $(document).ready(function () {
     // Load and render configurations
-    // Initialize values from localStorage
-    $("#serverUrl").val(localStorage.getItem('serverUrl') || '');
-    $("#api_key").val(localStorage.getItem('api_key') || '');
-    $("#model_type").val(localStorage.getItem('model_type') || 'generic'); // Default to 'generic' if not set
-    $("#openai_model").val(localStorage.getItem('openai_model') || 'gpt-3.5-turbo'); // Default to 'gpt-3.5-turbo' if not set
+    // Initialize values from chrome.storage
+    chrome.storage.local.get(['serverUrl', 'api_key', 'model_type', 'openai_model', 'apiConfigs'], function (result) {
+        $("#serverUrl").val(result.serverUrl || '');
+        $("#api_key").val(result.api_key || '');
+        $("#model_type").val(result.model_type || 'openai');
+        $("#openai_model").val(result.openai_model || 'gpt-3.5-turbo');
 
-    toggleOpenAIModelDropdown($("#model_type").val());
-    $("#model_type").change(function () {
-        toggleOpenAIModelDropdown($(this).val());
+        toggleOpenAIModelDropdown($("#model_type").val());
+        $("#model_type").change(function () {
+            toggleOpenAIModelDropdown($(this).val());
+        });
+
+        renderApiConfigs(result.apiConfigs || []);
     });
 
-    let apiConfigs = JSON.parse(localStorage.getItem('apiConfigs') || JSON.stringify([]));
-    renderApiConfigs(apiConfigs);
-
-// Save button
+    // Save button
     $("#save").click(function () {
-        localStorage.setItem('serverUrl', $("#serverUrl").val());
-        localStorage.setItem('api_key', $("#api_key").val());
-        localStorage.setItem('model_type', $("#model_type").val()); // Save model_type
-        localStorage.setItem('openai_model', $("#openai_model").val()); // 新增：保存 openai_model
-        saveApiConfigs();
+        chrome.storage.local.set({
+            'serverUrl': $("#serverUrl").val(),
+            'api_key': $("#api_key").val(),
+            'model_type': $("#model_type").val(),
+            'openai_model': $("#openai_model").val()
+        });
+        saveApiConfigs()
     });
-
 
     // Add API button
     $("#addApi").click(function () {
-        saveApiConfigs();
-        let apiConfigs = JSON.parse(localStorage.getItem('apiConfigs') || JSON.stringify([]))
-        apiConfigs.push({apiType: '', apiName: '', apiPrompt: ''});
-        renderApiConfigs(apiConfigs);
+        chrome.storage.local.get(['apiConfigs'], function (result) {
+            let apiConfigs = result.apiConfigs || [];
+            apiConfigs.push({apiType: '', apiName: '', apiPrompt: ''});
+            renderApiConfigs(apiConfigs);
+            chrome.storage.local.set({'apiConfigs': apiConfigs});
+        });
     });
 });
 
+// The rest of your functions (like toggleOpenAIModelDropdown, renderApiConfigs, etc.) can mostly remain the same
 // 显示或隐藏 openai_model 下拉选择框
 function toggleOpenAIModelDropdown(selectedValue) {
     if (selectedValue === "openai") {
@@ -84,23 +89,46 @@ function saveApiConfigs() {
             return acc;
         }, []);
 
-    localStorage.setItem('apiConfigs', JSON.stringify(apiConfigs));
+    chrome.storage.local.set({'apiConfigs': apiConfigs});
+    return apiConfigs;
 }
 
-function updateApi(index) {
-    let apiConfigs = JSON.parse(localStorage.getItem('apiConfigs'));
+async function updateApi(index) {
+    const getStorageData = () => {
+        return new Promise((resolve) => {
+            chrome.storage.local.get(['apiConfigs'], (result) => {
+                resolve(result.apiConfigs ? result.apiConfigs : []);
+            });
+        });
+    };
+
+    let apiConfigs = await getStorageData();
+
     apiConfigs[index] = {
         apiType: $(`.apiType:eq(${index})`).val(),
         apiName: $(`.apiName:eq(${index})`).val(),
         apiPrompt: $(`.apiPrompt:eq(${index})`).val()
     };
-    localStorage.setItem('apiConfigs', JSON.stringify(apiConfigs));
-    renderApiConfigs(apiConfigs);
+
+    chrome.storage.local.set({apiConfigs: apiConfigs}, () => {
+        renderApiConfigs(apiConfigs);
+    });
 }
 
-function removeApi(index) {
-    let apiConfigs = JSON.parse(localStorage.getItem('apiConfigs'));
+async function removeApi(index) {
+    const getStorageData = () => {
+        return new Promise((resolve) => {
+            chrome.storage.local.get(['apiConfigs'], (result) => {
+                resolve(result.apiConfigs ? result.apiConfigs : []);
+            });
+        });
+    };
+
+    let apiConfigs = await getStorageData();
     apiConfigs.splice(index, 1);
-    localStorage.setItem('apiConfigs', JSON.stringify(apiConfigs));
-    renderApiConfigs(apiConfigs);
+
+    chrome.storage.local.set({apiConfigs: apiConfigs}, () => {
+        renderApiConfigs(apiConfigs);
+    });
 }
+
