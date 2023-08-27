@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Options</title>
+    <meta charset="UTF-8">
+
+    <link href="jquery-ui-1.13.2.custom/jquery-ui.css" rel="stylesheet">
+    <link href="jquery-ui-1.13.2.custom/jquery-ui.structure.min.css" rel="stylesheet">
+    <link href="jquery-ui-1.13.2.custom/jquery-ui.theme.min.css" rel="stylesheet">
+    <link href="bootstrap-3.4.1-dist/css/bootstrap-theme.css" rel="stylesheet">
+    <link href="bootstrap-3.4.1-dist/css/bootstrap.css" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+    <h1 class="text-center">Configuration</h1>
+
+    <div class="form-group" style="display: none">
+        <label for="serverUrl">Server URL:</label>
+        <input type="text" id="serverUrl" class="form-control">
+    </div>
+
+    <div class="form-group">
+        <label for="model_type">Model Type:</label>
+        <select id="model_type" class="form-control">
+            <option value="generic">通义千问</option>
+            <option value="openai">OpenAI</option>
+        </select>
+    </div>
+    <!-- 新增的 openai_model 下拉选择框 -->
+    <div id="openai_model_div" class="form-group" style="display:none;">
+        <label for="openai_model">OpenAI Model:</label>
+        <select id="openai_model" class="form-control">
+            <option value="gpt-3.5-turbo">gpt-3.5-turbo</option>
+            <option value="gpt-3.5-turbo-0613">gpt-3.5-turbo-0613</option>
+            <option value="gpt-3.5-turbo-16k">gpt-3.5-turbo-16k</option>
+            <option value="gpt-3.5-turbo-16k-0613">gpt-3.5-turbo-16k-0613</option>
+            <option value="gpt-4">gpt-4</option>
+            <option value="gpt-4-0613">gpt-4-0613</option>
+            <option value="gpt-4-32k">gpt-4-32k</option>
+            <option value="gpt-4-32k-0613">gpt-4-32k-0613</option>
+        </select>
+    </div>
+
+
+    <div class="form-group">
+        <label for="api_key">API Key:</label>
+        <input type="text" id="api_key" class="form-control">
+    </div>
+
+    <button id="save" class="btn btn-primary">Save</button>
+
+    <h2 class="text-center">API List</h2>
+
+    <button id="addApi" class="btn btn-success">Add API</button>
+
+    <div id="apiList" class="mt-4"></div>
+</div>
+
+<script src="jquery-ui-1.13.2.custom/external/jquery/jquery.js"></script>
+<script src="jquery-ui-1.13.2.custom/jquery-ui.js"></script>
+<script src="bootstrap-3.4.1-dist/js/bootstrap.js"></script>
+<script src="options.js"></script>
+</body>
+</html>
+
