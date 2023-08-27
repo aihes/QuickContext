@@ -15,6 +15,10 @@ async function registerLastClickedCoords(tabId) {
                 console.warn(`Cannot execute script on chrome-extension:// URL: ${tab.url}`);
                 return;
             }
+            if (tab.url.startsWith('chrome://extensions')) {
+                console.warn(`Cannot execute script on chrome://extensions: ${tab.url}`);
+                return;
+            }
             await chrome.scripting.executeScript({
                 target: {tabId},
                 function: () => {
