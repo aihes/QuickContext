@@ -1,12 +1,18 @@
 async function fetchGeneric(apiName, apiKey, prompt_text, tab) {
     try {
         const response = await fetch('https://dashscope.aliyuncs.com/api/v1/services/aigc/text-generation/generation', {
-            method: 'POST', headers: {
-                'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json', 'X-DashScope-SSE': 'enable'
-            }, body: JSON.stringify({
-                "model": "qwen-v1", "input": {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${apiKey}`,
+                'Content-Type': 'application/json',
+                'X-DashScope-SSE': 'enable'
+            },
+            body: JSON.stringify({
+                "model": "qwen-v1",
+                "input": {
                     "prompt": `${prompt_text}`
-                }, "parameters": {}
+                },
+                "parameters": {}
             })
         });
 
@@ -126,7 +132,6 @@ async function fetchData(apiType, selectedText, serverUrl, tab) {
     const config = mergedConfigs.find(item => item.apiType === apiType);
     const apiName = config ? config.apiName : '';
     const apiPrompt = config ? config.apiPrompt : '';
-
 
 
     if (!apiKey || !model_type) {
