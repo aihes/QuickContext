@@ -47,6 +47,16 @@
         <input type="text" id="api_key" class="form-control">
     </div>
 
+    <div class="form-group">
+        <label for="serverUrl">服务器地址</label>
+        <input type="text" class="form-control" id="serverUrl" placeholder="http://localhost:5001">
+    </div>
+    <div class="form-group">
+        <label for="wsUrl">WebSocket地址</label>
+        <input type="text" class="form-control" id="wsUrl" placeholder="ws://localhost:5001/ws">
+        <small class="form-text text-muted">如果留空，将使用服务器地址自动生成WebSocket地址</small>
+    </div>
+
     <button id="save" class="btn btn-primary">Save</button>
 
     <h2 class="text-center">API List</h2>

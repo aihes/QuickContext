@@ -8,10 +8,13 @@
     "storage",
     "activeTab",
     "tabs",
-    "scripting"
+    "scripting",
+    "<all_urls>"
   ],
   "host_permissions": [
-    "<all_urls>"
+    "<all_urls>",
+    "ws://*/*",
+    "wss://*/*"
   ],
   "icons": {
     "48": "icons/QuickContext_logo_128x128.png",

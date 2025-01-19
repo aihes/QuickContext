@@ -5,6 +5,7 @@ importScripts('utility.js');
 importScripts('api.js');
 importScripts('floatingDiv.js');
 importScripts('storage.js');
+importScripts('websocket_manager.js');
 
 
 // 右键菜单点击事件处理
@@ -46,4 +47,8 @@ chrome.tabs.onUpdated.addListener(async function (tabId, changeInfo, tab) {
         });
     }
 });
+
+// 在service worker启动时初始化WebSocket连接
+// 现在可以直接调用全局函数
+initializeWebSocket();
 

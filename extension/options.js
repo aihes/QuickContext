@@ -1,11 +1,12 @@
 $(document).ready(function () {
     // Load and render configurations
     // Initialize values from chrome.storage
-    chrome.storage.local.get(['serverUrl', 'api_key', 'model_type', 'openai_model', 'apiConfigs'], function (result) {
-        $("#serverUrl").val(result.serverUrl || '');
+    chrome.storage.local.get(['serverUrl', 'api_key', 'model_type', 'openai_model', 'apiConfigs', 'wsUrl'], function (result) {
+        $("#serverUrl").val(result.serverUrl || 'http://localhost:5001');
         $("#api_key").val(result.api_key || '');
         $("#model_type").val(result.model_type || 'openai');
         $("#openai_model").val(result.openai_model || 'gpt-3.5-turbo');
+        $("#wsUrl").val(result.wsUrl || '');
 
         toggleOpenAIModelDropdown($("#model_type").val());
         $("#model_type").change(function () {
@@ -21,7 +22,8 @@ $(document).ready(function () {
             'serverUrl': $("#serverUrl").val(),
             'api_key': $("#api_key").val(),
             'model_type': $("#model_type").val(),
-            'openai_model': $("#openai_model").val()
+            'openai_model': $("#openai_model").val(),
+            'wsUrl': $("#wsUrl").val()
         });
         saveApiConfigs()
     });
@@ -131,4 +133,22 @@ async function removeApi(index) {
         renderApiConfigs(apiConfigs);
     });
 }
+
+document.addEventListener('DOMContentLoaded', async function() {
+    // 加载已保存的配置
+    const serverUrl = await getData('serverUrl') || 'http://localhost:5001';
+    const wsUrl = await getData('wsUrl') || '';
+    document.getElementById('serverUrl').value = serverUrl;
+    document.getElementById('wsUrl').value = wsUrl;
+    // ... existing loading code ...
+});
+
+// 保存配置
+document.getElementById('saveButton').addEventListener('click', async function() {
+    const serverUrl = document.getElementById('serverUrl').value;
+    const wsUrl = document.getElementById('wsUrl').value;
+    await setData('serverUrl', serverUrl);
+    await setData('wsUrl', wsUrl);
+    // ... existing saving code ...
+});
 
