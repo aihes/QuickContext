@@ -1,8 +1,8 @@
 // WebSocket连接管理
 let ws = null;
 let reconnectCount = 0;
-const MAX_RECONNECT_ATTEMPTS = 3;
 let reconnectTimeout = null;
+const RECONNECT_INTERVAL = 3000; // 重连间隔3秒
 
 async function reportConnectionError(serverUrl, error) {
     try {
@@ -13,7 +13,7 @@ async function reportConnectionError(serverUrl, error) {
             },
             body: JSON.stringify({
                 type: 'websocket_error',
-                message: `WebSocket连接失败超过${MAX_RECONNECT_ATTEMPTS}次`,
+                message: `WebSocket连接失败 (第${reconnectCount}次重试)`,
                 error: error?.message || 'Unknown error',
                 timestamp: new Date().toISOString()
             })
@@ -33,7 +33,7 @@ async function initializeWebSocket(isReconnect = false) {
         reconnectTimeout = null;
     }
 
-    const serverUrl = await getData('serverUrl') || 'http://localhost:8000';
+    const serverUrl = await getData('serverUrl') || 'http://localhost:5001';
     const wsUrl = await getData('wsUrl') || serverUrl.replace('http', 'ws') + '/ws';
     
     try {
@@ -41,33 +41,28 @@ async function initializeWebSocket(isReconnect = false) {
         
         ws.onopen = () => {
             console.log('WebSocket连接已建立到:', wsUrl);
-            reconnectCount = 0;
+            reconnectCount = 0; // 连接成功后重置计数器
         };
         
         ws.onclose = async (event) => {
             console.log(`WebSocket连接已关闭 (code: ${event.code}, reason: ${event.reason})`);
             
-            if (event.code !== 1000) {
+            if (event.code !== 1000) { // 如果不是正常关闭
                 reconnectCount++;
                 
-                if (reconnectCount <= MAX_RECONNECT_ATTEMPTS) {
-                    const delay = Math.min(1000 * Math.pow(2, reconnectCount - 1), 10000);
-                    console.log(`第${reconnectCount}次重试，将在${delay/1000}秒后重连...`);
-                    
-                    reconnectTimeout = setTimeout(() => {
-                        initializeWebSocket(true);
-                    }, delay);
-                } else {
-                    console.error(`WebSocket重连失败超过${MAX_RECONNECT_ATTEMPTS}次，发送报警`);
+                // 发送报警（每10次重试发送一次）
+                if (reconnectCount % 10 === 0) {
                     await reportConnectionError(serverUrl, {
-                        message: `WebSocket connection failed after ${MAX_RECONNECT_ATTEMPTS} attempts`
+                        message: `WebSocket connection failed (retry attempt ${reconnectCount})`
                     });
-                    
-                    setTimeout(() => {
-                        reconnectCount = 0;
-                        initializeWebSocket(true);
-                    }, 60000);
                 }
+                
+                console.log(`准备第${reconnectCount}次重试，将在${RECONNECT_INTERVAL/1000}秒后重连...`);
+                
+                // 始终进行重连，不设置最大重试次数
+                reconnectTimeout = setTimeout(() => {
+                    initializeWebSocket(true);
+                }, RECONNECT_INTERVAL);
             }
         };
         
@@ -91,7 +86,7 @@ async function initializeWebSocket(isReconnect = false) {
     } catch (error) {
         console.error('创建WebSocket连接时出错:', error);
         if (!isReconnect) {
-            ws.onclose();
+            ws?.close();
         }
     }
 }
